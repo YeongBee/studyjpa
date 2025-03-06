@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: studyjpa
+
+#    Mysql
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: "jdbc:mysql://192.168.0.30:3306/dbtest?useSSL=false&serverTimezone=UTC"
+#    username: yeongbee
+#    password: home77
+
+  h2:
+    console:
+      enabled: true
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: "jdbc:h2:./data/jpa;Mode=Oracle;AUTO_SERVER=TRUE"
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+
+server:
+  port: 7071
+
+
+
+
