@@ -1,5 +1,8 @@
 package com.db.study.studyjpa.jpa.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,14 +32,19 @@ public class Category {
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "item_id"))
     @ToString.Exclude
+    @JsonIgnoreProperties(value = "categories")
     private List<Item> items = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     @ToString.Exclude
+    @JsonBackReference
+//    @JsonIgnoreProperties({"child", "items", "parent"})
     private Category parent;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @JsonManagedReference
+//    @JsonIgnoreProperties("parent")
     private List<Category> child = new ArrayList<>();
 
     public void updateCategoryParent(Category category) {

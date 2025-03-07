@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 검색</title> <!-- jQuery 라이브러리 추가 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script> $(document).ready(function () {
+        $("#searchForm").submit(function (e) {
+            e.preventDefault(); // 기본 폼 제출(페이지 리로드) 차단
+            // 폼에 입력된 값을 JSON 객체로 구성 (빈 값은 null 처리)
+            var formData = {
+                name: $("#name").val(),
+                minPrice: $("#minPrice").val() ? parseInt($("#minPrice").val(), 10) : null,
+                maxPrice: $("#maxPrice").val() ? parseInt($("#maxPrice").val(), 10) : null,
+                categoryId: $("#categoryId").val() ? parseInt($("#categoryId").val(), 10) : null
+            };
+
+            $.ajax({
+                type: "POST",  // API 요구사항에 맞춰 HTTP 메서드 선택 (서버가 GET을 기대할 경우에도, GET은 body 전달이 제한적이므로 POST 추천)
+                url: /*[[@{/api/items}]]*/ "/api/items",
+                data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var tbody = $("#resultBody");
+                    tbody.empty(); // 기존 결과 초기화
+
+                    if (response && response.length > 0) {
+                        $.each(response, function (index, item) {
+                            var row = "<tr>";
+                            row += "<td>" + (item.id || "") + "</td>";
+                            row += "<td>" + (item.name || "") + "</td>";
+                            row += "<td>" + (item.price || "") + "</td>";
+                            row += "<td>" + (item.stockQuantity || "") + "</td>";
+
+                            // 카테고리 정보 렌더링: item.categories가 배열로 존재한다고 가정
+                            var catHtml = "";
+                            if (item.categories && item.categories.length > 0) {
+                                catHtml = "<ul>";
+                                $.each(item.categories, function (i, cat) {
+                                    catHtml += "<li>" + (cat.name || "미지정") + "</li>";
+                                });
+                                catHtml += "</ul>";
+                            } else {
+                                catHtml = "미지정";
+                            }
+                            row += "<td>" + catHtml + "</td>";
+                            row += "</tr>";
+
+                            tbody.append(row);
+                        });
+                    } else {
+                        tbody.append("<tr><td colspan='5'>검색 결과가 없습니다.</td></tr>");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("검색 요청 중 오류 발생: " + error);
+                }
+            });
+        });
+    });
+    </script>
+</head>
+<body>
+<h1>상품 검색</h1> <!-- 실제 폼 제출 없이 JS로 처리하기 위해 action="#"으로 지정 -->
+<form id="searchForm" action="#" method="post">
+    <div><label for="name">상품명:</label>
+        <input type="text" id="name" name="name" th:value="${param.name}"/></div>
+    <div><label for="minPrice">최소 가격:</label>
+        <input type="number" id="minPrice" name="minPrice" th:value="${param.minPrice}"/></div>
+    <div><label for="maxPrice">최대 가격:</label>
+        <input type="number" id="maxPrice" name="maxPrice" th:value="${param.maxPrice}"/></div>
+    <div><label for="categoryId">카테고리:</label>
+        <select id="categoryId" name="categoryId">
+            <option value="">--전체--</option> <!-- 서버에서 전달된 categories 모델을 사용하여 옵션 생성 -->
+            <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"
+                    th:selected="${param.categoryId} == ${cat.id}"></option>
+        </select></div>
+    <div>
+        <button type="submit">검색</button>
+    </div>
+</form>
+<h2>검색 결과</h2>
+<table border="1" cellpadding="5">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>상품명</th>
+        <th>가격</th>
+        <th>재고 수량</th>
+        <th>카테고리</th>
+    </tr>
+    </thead>
+    <tbody id="resultBody">
+    <!-- 페이지 최초 렌더링 시 서버에서 전달한 items 모델 사용 -->
+    <tr th:each="item : ${items}">
+        <td th:text="${item.id}"></td>
+        <td th:text="${item.name}"></td>
+        <td th:text="${item.price}"></td>
+        <td th:text="${item.stockQuantity}"></td>
+        <td>
+            <ul>
+                <li th:each="cat : ${item.categories}" th:text="${cat.name}"></li>
+            </ul>
+        </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(items)}">
+        <td colspan="5">검색 결과가 없습니다.</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html> --------------------------------------------------

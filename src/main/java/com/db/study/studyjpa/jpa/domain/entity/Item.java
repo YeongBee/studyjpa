@@ -1,5 +1,6 @@
 package com.db.study.studyjpa.jpa.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,7 @@ public class Item {
     private int stockQuantity;  // 상품 수량
 
     @ManyToMany(mappedBy = "items")
+    @JsonIgnoreProperties(value = "items")
     private List<Category> categories = new ArrayList<>();
 
     public void addCategory(Category category) {

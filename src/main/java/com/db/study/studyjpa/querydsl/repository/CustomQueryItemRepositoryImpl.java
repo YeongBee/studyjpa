@@ -9,15 +9,28 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-@RequiredArgsConstructor
-public class CustomQueryItemRepositoryImpl implements CustomQueryItemRepository{
+import static com.db.study.studyjpa.jpa.domain.entity.QItem.item;
 
-    private JPAQueryFactory jpaQueryFactory;
+
+/**
+ * QueryDSL에서는 where문제 값이 NULL이 들어가면 무시된다.
+ */
+
+
+@RequiredArgsConstructor
+public class CustomQueryItemRepositoryImpl implements CustomQueryItemRepository {
+
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public List<Item> searchItem(String name, Integer minPrice, Integer maxPrice, Category category) {
-        return jpaQueryFactory
-                .selectFrom()
+        return queryFactory
+                .selectFrom(item)
+                .where(nameContains(name),
+                        priceBetween(minPrice, maxPrice),
+                        categoryEq(category)
+                )
+                .fetch();
     }
 
 
@@ -25,11 +38,11 @@ public class CustomQueryItemRepositoryImpl implements CustomQueryItemRepository{
         return StringUtils.hasText(name) ? item.name.contains(name) : null;
     }
 
-    private BooleanExpression priceGoe(Integer minPriceP){
+    private BooleanExpression priceGoe(Integer minPriceP) {
         return minPriceP != null ? item.price.goe(minPriceP) : null;
     }
 
-    private BooleanExpression priceLoe(Integer maxPrice){
+    private BooleanExpression priceLoe(Integer maxPrice) {
         return maxPrice != null ? item.price.loe(maxPrice) : null;
     }
 
@@ -50,7 +63,9 @@ public class CustomQueryItemRepositoryImpl implements CustomQueryItemRepository{
     }
 
 
-    private BooleanExpression categoryEq(item.Category category){
-        return category != null ? item.category.eq(category) : null;
+    private BooleanExpression categoryEq(Category category) {
+        return category != null
+                ? item.categories.any().id.eq(category.getId()) // Category id를 비교
+                : null;
     }
 }
