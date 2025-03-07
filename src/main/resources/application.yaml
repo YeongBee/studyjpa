@@ -1,14 +1,6 @@
 spring:
   application:
     name: studyjpa
-
-#    Mysql
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: "jdbc:mysql://192.168.0.30:3306/dbtest?useSSL=false&serverTimezone=UTC"
-#    username: yeongbee
-#    password: home77
-
   h2:
     console:
       enabled: true
