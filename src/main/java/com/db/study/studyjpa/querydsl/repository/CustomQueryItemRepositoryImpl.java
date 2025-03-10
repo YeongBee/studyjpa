@@ -13,7 +13,7 @@ import static com.db.study.studyjpa.jpa.domain.entity.QItem.item;
 
 
 /**
- * QueryDSL에서는 where문제 값이 NULL이 들어가면 무시된다.
+ * QueryDSL에서는 where 에 값이 NULL이 들어가면 무시된다.
  */
 
 

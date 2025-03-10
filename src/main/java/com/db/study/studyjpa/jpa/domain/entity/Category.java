@@ -31,7 +31,7 @@ public class Category {
     @JoinTable(name = "category_item",
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "item_id"))
-    @ToString.Exclude
+//    @ToString.Exclude
     @JsonIgnoreProperties(value = "categories")
     private List<Item> items = new ArrayList<>();
 

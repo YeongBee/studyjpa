@@ -46,8 +46,8 @@ class ShopServiceImplTest {
     @Test
     void memberSave() {
         //given
-        Address address = new Address("SnugNamSi", "GuMiDong", "123-34-54");
-        MemberSaveDTO memberSaveDTO = new MemberSaveDTO("user1", address);
+        Address address = new Address("SnugNamSi333", "GuMiDong333", "123-34-54333");
+        MemberSaveDTO memberSaveDTO = new MemberSaveDTO("user3", address);
 
         //when
         Member memberGet = shopService.memberSave(memberSaveDTO);
@@ -134,7 +134,7 @@ class ShopServiceImplTest {
         log.info("member={}", memberGet);
 
         // 상품 하나 가져오기
-        Item item = shopService.findItemById(13L);
+        Item item = shopService.findItemById(28L);
         log.info("item={}", item);
 
         // 배송 추가
@@ -279,7 +279,7 @@ class ShopServiceImplTest {
     // 상품은 판매중 상품, 판매중지된 상품 이렇게 상태코드로 관리하는게 좋아보인다.
     @DisplayName("연관관계 삭제 후 아이템 삭제")
     @Test
-    void deleteItem(){
+    void deleteItem() {
 
         //given
         Long itemId = 28L;
@@ -295,7 +295,91 @@ class ShopServiceImplTest {
 
     }
 
+    // orphan 테스트
+    @DisplayName("OrphanRemovalTest")
+    @Test
+    void orphanRemovalTest() {
+        //given
+        Member member = shopService.findByMemberOne(22L);
 
+       Order order = shopService.findOrderById(11L);
+
+        //when
+        shopService.deleteOrderById(order.getId());
+//        Item item = shopService.findItemById(11L);
+//        log.info("item={}", item);
+        Member byMemberOne = shopService.findByMemberOne(22L);
+        log.info("byMemberOne={}", byMemberOne);
+        //then
+        assertThrows(EntityNotFoundException.class, () -> shopService.findByOrderId(11L));
+        assertEquals(member, shopService.findByMemberOne(22L));
+
+
+    }
+
+    // 삭제
+    @DisplayName("삭제 테스트")
+    @Test
+    void deleteTestItem() {
+        //given
+        Item item = shopService.findItemById(21L);
+
+        //when
+        shopService.deleteItemById(item.getId());
+        Category category = shopService.findCategoryById(12L);
+        log.info("category={}", category);
+        //then
+        assertNotNull(category);
+    }
+
+    @DisplayName("삭제 테스트")
+    @Test
+    void deleteTestItemOrphanRemoval() {
+        //given
+        Item item = shopService.findItemById(21L);
+
+        //when
+        shopService.deleteItemById(item.getId());
+        Category category = shopService.findCategoryById(12L);
+        log.info("category={}", category);
+        //then
+        assertNotNull(category);
+    }
+
+
+
+
+    @DisplayName("삭제 테스트2")
+    @Test
+    void deleteTestCategory() {
+
+        //given
+        Item item = shopService.findItemById(28L);
+        item.getCategories().clear();
+
+        //when
+        shopService.deleteItemById(item.getId());
+//        Category category = shopService.findCategoryById(8L);
+//        log.info("category={}", category);
+        //then
+        assertThrows(EntityNotFoundException.class, () -> shopService.findCategoryById(item.getId()));
+    }
+
+    @DisplayName("삭제 테스트3")
+    @Test
+    void deleteTestCategoryOrphanRemoval() {
+
+        //given
+        Item item = shopService.findItemById(28L);
+        item.getCategories().clear();
+
+        //when
+        shopService.deleteItemById(item.getId());
+        Category category = shopService.findCategoryById(8L);
+        log.info("category={}", category);
+        //then
+        assertNull(category);
+    }
 
 
 }

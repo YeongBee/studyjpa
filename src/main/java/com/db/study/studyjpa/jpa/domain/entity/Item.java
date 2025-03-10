@@ -26,8 +26,9 @@ public class Item {
     private int price;      // 상품가격
     private int stockQuantity;  // 상품 수량
 
-    @ManyToMany(mappedBy = "items")
+    @ManyToMany(mappedBy = "items", cascade = CascadeType.ALL)
     @JsonIgnoreProperties(value = "items")
+    @ToString.Exclude
     private List<Category> categories = new ArrayList<>();
 
     public void addCategory(Category category) {

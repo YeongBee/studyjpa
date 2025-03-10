@@ -7,6 +7,7 @@ import com.db.study.studyjpa.jpa.dto.SearchOrderDTO;
 import com.db.study.studyjpa.jpa.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -137,10 +138,42 @@ public class ShopServiceImpl implements ShopService {
         return categoryRepository.findByParentIsNull();
     }
 
+    // 카테고리 찾기
     @Transactional(readOnly = true)
     public Category findCategoryById(Long id) {
         return categoryRepository.findById(id).orElse(null);
     }
 
+    // 아이템 삭제
+    @Transactional
+    public void deleteItemById(Long id) {
+        itemRepository.deleteById(id);
+    }
+
+    // 카테고리 삭제
+    @Transactional
+    public void deleteCategoryById(Long id) {
+        categoryRepository.deleteById(id);
+    }
+
+    // 멤버 삭제
+    @Transactional
+    public void deleteMemberById(Long id) {
+        memberRepository.deleteById(id);
+    }
+
+    // 주문삭제
+    @Transactional
+    public void deleteOrderById(Long id) {
+        orderRepository.deleteById(id);
+    }
+
+    //주문 찾가
+    @Transactional(readOnly = true)
+    public Order findByOrderId(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("값이없음"));
+
+    }
 }
 

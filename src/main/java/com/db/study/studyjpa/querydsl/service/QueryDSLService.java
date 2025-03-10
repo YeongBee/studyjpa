@@ -5,6 +5,7 @@ import com.db.study.studyjpa.jpa.domain.entity.Item;
 import com.db.study.studyjpa.querydsl.repository.ItemQueryDSLRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class QueryDSLService {
 
 
     // QueryDSL 동적쿼리
+    @Transactional(readOnly = true)
     public List<Item> searchItem(String name, Integer minPrice, Integer maxPrice, Category category) {
         return itemQueryDSLRepository.searchItem(name, minPrice, maxPrice, category);
     }
