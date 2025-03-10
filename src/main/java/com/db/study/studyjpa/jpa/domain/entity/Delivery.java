@@ -27,9 +27,6 @@ public class Delivery {
     @Enumerated
     private DeliveryStatus deliveryStatus;
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
 
     public void updateDelivery(Order order) {
         this.order = order;

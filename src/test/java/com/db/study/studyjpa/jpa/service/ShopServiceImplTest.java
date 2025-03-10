@@ -45,6 +45,7 @@ class ShopServiceImplTest {
     @DisplayName("멤버 추가")
     @Test
     void memberSave() {
+
         //given
         Address address = new Address("SnugNamSi333", "GuMiDong333", "123-34-54333");
         MemberSaveDTO memberSaveDTO = new MemberSaveDTO("user3", address);
@@ -65,14 +66,16 @@ class ShopServiceImplTest {
 //        // 컴퓨터 카테고리에 그래픽카드 목록 추가
 //        Category category = shopService.addChildCategory(categoryDto, 3L);
 //
-        CategoryDto categoryDto = new CategoryDto("RTX5080");
+        CategoryDto categoryDto = new CategoryDto("RTX5070");
         Category categoryValue = categoryRepository.findByName("그래픽카드")
                 .orElse(null);
         // 컴퓨터 카테고리에 그래픽카드 목록 추가
         Category category = shopService.addChildCategory(categoryDto, categoryValue.getId());
 
-        log.info("categoryDto: {}", categoryDto);
+        log.info("category: {}", category);
     }
+
+
 
     @DisplayName("카테고리 목록 출력 조회")
     @Test
@@ -129,7 +132,7 @@ class ShopServiceImplTest {
     void orderSave() {
         //given
         Address address = new Address("Seoul", "GangNam", "42304-543");
-        MemberSaveDTO memberSaveDTO = new MemberSaveDTO("user2", address);
+        MemberSaveDTO memberSaveDTO = new MemberSaveDTO("user4", address);
         Member memberGet = shopService.memberSave(memberSaveDTO);
         log.info("member={}", memberGet);
 

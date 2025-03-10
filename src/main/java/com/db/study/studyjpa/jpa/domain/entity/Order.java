@@ -47,10 +47,12 @@ public class Order {
         member.getOrders().add(this);
     }
 
+
     public void updateOrderOrderItem(OrderItem orderItem) {
         this.orderItems.add(orderItem);
         orderItem.updateOrder(this);
     }
+
 
     public void updateOrderDelivery(Delivery delivery) {
         this.delivery = delivery;

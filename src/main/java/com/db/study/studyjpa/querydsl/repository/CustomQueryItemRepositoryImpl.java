@@ -24,6 +24,7 @@ public class CustomQueryItemRepositoryImpl implements CustomQueryItemRepository 
 
     @Override
     public List<Item> searchItem(String name, Integer minPrice, Integer maxPrice, Category category) {
+
         return queryFactory
                 .selectFrom(item)
                 .where(nameContains(name),
@@ -39,6 +40,12 @@ public class CustomQueryItemRepositoryImpl implements CustomQueryItemRepository 
     }
 
     private BooleanExpression priceGoe(Integer minPriceP) {
+//        if(minPriceP == null) {
+//            return null;
+//        } else {
+//           return  item.price.goe(minPriceP);
+//        }
+
         return minPriceP != null ? item.price.goe(minPriceP) : null;
     }
 
